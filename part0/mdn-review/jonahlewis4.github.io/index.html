@@ -9,30 +9,58 @@
     href="https://fonts.googleapis.com/css2?family=DotGothic16">
   </head>
   <body>
-    <h1>Picture of a tree</h1>
-    <img src="images/tree.jpg" alt="A picture of a tree" />
+    <div>
+      <h1>Picture of a tree</h1>
+      <img src="images/tree.jpg" alt="A picture of a tree" />
 
-    <p>This is picture of a tree. It has</p>
-    <ul>
-        <li>branches</li>
-        <li>leaves</li>
-        <li>roots</li>
-        <li>a trunk</li>
-    </ul>
-    <p>and is made up of xylem and phloem and other water vascular tissues.
-    </p>
+      <p>This is picture of a tree. It has</p>
+      <ul>
+          <li>branches</li>
+          <li>leaves</li>
+          <li>roots</li>
+          <li>a trunk</li>
+      </ul>
+      <p>and is made up of xylem and phloem and other water vascular tissues.
+      </p>
 
-    <p>If you click on the image, it will change to an image of truffula trees from 
-        <a href = "https://www.seussville.com/">
-            Dr. Seus'
-        </a>
-        The lorax.
+      <p>If you click on the image, it will change to an image of truffula trees from 
+          <a href = "https://www.seussville.com/">
+              Dr. Seus'
+          </a>
+          The lorax.
 
-        The font used for this webpage is called DotGothic16.
-         
-    </p>
+          The font used for this webpage is called DotGothic16.
+          
+      </p>
+    </div>
+    
+    <div class = "container">
+      <button>Change user</button>
+    </div>
+    
+    <div>
+      <form action = "/my-handling-form-page" method = "pose">
+        <ul>
+          <li>
+            <label for = "name">Name:</label>
+            <input type = "text" id = "name" name = "user_name" />
+          </li>
+          <li>
+            <label for = "mail">Email: </label>
+            <input type = "email" id = "mail" name = "user_email" />
+          </li>
+          <li>
+            <label for = "msg">Message: </label>
+            <textarea id = "msg" name = "user_message"></textarea>
+          </li>
+          <li class = "button">
+            <button type = "submit">Send your message</button>
+          </li>
+        </ul>
+        <p>*this form is currently non-functional</p>
+      </form>
+    </div>
 
-    <button>Change user</button>
     <script src = "scripts/main.js"></script>
 </body>
 </html>
