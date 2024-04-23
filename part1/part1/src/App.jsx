@@ -11,16 +11,12 @@ const Content = (props) => {
   console.log(props)
   return (
   <div>   
-     <p>
         <Part part = {props.parts[0]}/>
-      </p>
-      
-      <p>
+        
         <Part part = {props.parts[1]}/>
-      </p>
-      <p>
+           
         <Part part = {props.parts[2]}/>
-      </p>
+  
   </div>
   )
 }
