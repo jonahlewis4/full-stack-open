@@ -6,6 +6,7 @@ const Button = ({handleClick, text}) =>
   )
 }
 
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
