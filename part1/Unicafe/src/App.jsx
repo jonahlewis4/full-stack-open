@@ -10,11 +10,7 @@ const Button = ({handleClick, text}) =>
   )
 }
 
-const DisplayValue = ({text, value}) => {
-  return (
-    <div>{text} {value}</div>
-  )
-}
+
 
 const App = () => {
   // save clicks of each button to its own state
@@ -37,9 +33,13 @@ const App = () => {
       <Button handleClick = {updateNeutral(neutral + 1)} text = "neutral"/>
       <Button handleClick = {updateBad(bad + 1)} text = "bad"/>
       
-      <DisplayValue text = "good" value = {good}/>
-      <DisplayValue text = "neutral" value = {neutral}/>
-      <DisplayValue text = "bad" value = {bad}/>
+      <div>good {good}</div>
+      <div>neutral {neutral}</div>
+      <div>bad {bad}</div>
+      <div>all {good + bad + neutral}</div>
+      <div>average {(good - bad) / (good + bad + neutral)}</div>
+      <div>positive {good / (good + bad + neutral) * 100} %</div>
+
     
     </div>
   )
