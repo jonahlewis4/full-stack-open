@@ -30,14 +30,30 @@ const App = () => {
     setVotes(points)
   }
 
+  const indexOfMax = (arr) => {
+    console.log(arr)
+    let index = 0;
+    for(let i = 0; i < arr.length; i++){
+      if(arr[i] > arr[index])
+      {
+        index = i 
+      }
+    }
+    console.log(index)
+    return index
+  }
 
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
       <Button handleClick = {vote()} text = "vote"/>
       <Button handleClick = {randomSelection()} text = "next anecdote"/>
+
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[indexOfMax(votes)]}</p>
     </div>
   )
 }
