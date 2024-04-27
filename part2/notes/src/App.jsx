@@ -11,7 +11,7 @@ const App = (props) => {
   const [newNote, setNewNote] = useState('a new note...')
   const [showAll, setShowAll] = useState(true)
   
-  const hook = () => {
+  useEffect(() => {
     console.log('effect')
     axios 
       .get('http://localhost:3001/notes')
@@ -19,9 +19,8 @@ const App = (props) => {
         console.log('promise fulfilled')
         setNotes(response.data)
       })
-  }
+  }, [])
 
-  useEffect(hook, [])
   console.log('render', notes.length, 'notes')
 
   const handleNoteChange = (event) => {
@@ -35,11 +34,15 @@ const App = (props) => {
     const noteObject = {
       content: newNote,
       important: Math.random()< 0.5,
-      id: notes.length + 1,
     }
-  
-    setNotes(notes.concat(noteObject))
-    setNewNote('')
+    
+
+    axios
+      .post('http://localhost:3001/notes', noteObject)
+      .then(response => {
+        setNotes(notes.concat(noteObject))
+        setNewNote('')
+      })
   }
   //if showALL is true, array of notes to show is all of em.
   //if show all is false, array of notes to show is only the important notes
@@ -54,8 +57,9 @@ const App = (props) => {
         </button>
       </div>
       <ul>
+        {console.log(notesToShow)}
         {notesToShow.map( (note) => 
-          <Note key = {note.id} note = {note}/>
+          <Note note = {note}/>
         )}
       </ul>
       <form onSubmit = {addNote}>

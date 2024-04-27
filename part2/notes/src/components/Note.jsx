@@ -1,6 +1,6 @@
 const Note = ({note}) => {
     return (
-      <li>{note.content}</li>
+      <li key = {note.id}>{note.content}</li>
     )
   }
 
