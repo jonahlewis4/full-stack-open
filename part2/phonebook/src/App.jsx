@@ -81,27 +81,49 @@ const App = () => {
     }
 
 
-    //if our persons array already contains the given person, do not add it to the array
     console.log(persons)
-    if(!persons.some(person => (person.name === newName && person.number === newNum))){
+    console.log(newPerson)
+    //if the person is compeltely unique, just add it to the array.
+    if(!persons.some(person => (person.name === newPerson.name))){
       const newPersons = persons.concat(newPerson)
       //add a new person to the dataserver and update state person array.  
-      axios
-        .post('http://localhost:3001/persons', newPerson)
+      personService
+        .create(newPerson)
         .then((result) => {
-          const createdPeople = persons.concat(result.data)
+          const createdPeople = persons.concat(result)
           setPersons(createdPeople)
           //concatenate the filtered people to include the new person IF it fits in the filter
-          setFilteredPersons(newPerson.name.includes(searchKey) ? filteredPersons.concat(result.data) : filteredPersons)
+          setFilteredPersons(newPerson.name.includes(searchKey) ? filteredPersons.concat(result) : filteredPersons)
 
           console.log(createdPeople)
         })
+    } 
+    //else if only the names but not numbers match, confirm if the user iwants to change that person's phone number
+    else if (persons.some(person => (person.name === newName && person.number !== newNum))) {
+        if(confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+          //update the person on the server.
+          
+          //identify the person update on database
+          const updatedPerson = {...(persons.find((p) => p.name === newPerson.name)), number: newPerson.number}
+          console.log(updatedPerson)
+          personService
+          .update(updatedPerson.id, updatedPerson)
+          .then(updatedPerson => {
+            //set people to the new one with all the people in it
+            console.log(updatedPerson)
+            setPersons(persons.map(p => p.id === updatedPerson.id ? updatedPerson : p))
+            setFilteredPersons(filteredPersons.map(p => p.id === updatedPerson.id ? updatedPerson : p))
+
+          })
+        }
     }
-    else
+    else //say that the person was already added to the phonebook
     {
       console.log(persons)
       alert(`${newName} with number ${newNum} is already added to phonebook`)
     }
+    //else if only the names but not numbers match, confirm if the user iwants to change that person's phone number
+   
   }
   const deletePerson = person => {
     //alert and ask for confirmation that they want the person deleted
