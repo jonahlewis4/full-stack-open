@@ -47,6 +47,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState('')
   const [searchKey, setSearchKey] = useState('')
+  const [filteredPersons, setFilteredPersons] = useState(persons)
 
   useEffect(() => {
     console.log('effect')
@@ -61,23 +62,31 @@ const App = () => {
 
 
   
-  const [filteredPersons, setFilteredPersons] = useState(persons)
   const addPerson = (event) => {
     event.preventDefault()
     console.log('add number clicked')
-  
+    
     const newPerson = {
       name: newName,
       number: newNum,
-      id: persons.length + 1
     }
+
 
     //if our persons array already contains the given person, do not add it to the array
     console.log(persons)
     if(!persons.some(person => (person.name === newName && person.number === newNum))){
       const newPersons = persons.concat(newPerson)
-      setPersons(newPersons)
-      console.log(newPersons)
+      //add a new person to the dataserver and update state person array.  
+      axios
+        .post('http://localhost:3001/persons', newPerson)
+        .then((result) => {
+          const createdPeople = persons.concat(result.data)
+          setPersons(createdPeople)
+          //concatenate the filtered people to include the new person IF it fits in the filter
+          setFilteredPersons(newPerson.name.includes(searchKey) ? filteredPersons.concat(result.data) : filteredPersons)
+
+          console.log(createdPeople)
+        })
     }
     else
     {
@@ -97,7 +106,7 @@ const App = () => {
 const handleSearchKeyChange = (event) => {
   console.log(event.target.value)
   setSearchKey(event.target.value)
-
+  console.log(persons)
   setFilteredPersons(persons.filter(person => person.name.includes(event.target.value)))
 }
 
@@ -110,6 +119,7 @@ const handleSearchKeyChange = (event) => {
       <h3>add a new</h3>
       <PersonForm onSubmit = {addPerson} name = {newName} number = {newNum} onChanges = {{handleNameChange, handleNumberChange}}/>
       <h3>Numbers</h3>
+      {console.log(filteredPersons)}
       <People persons = {filteredPersons}/>
     </div>
   )
