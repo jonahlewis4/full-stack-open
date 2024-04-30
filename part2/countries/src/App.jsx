@@ -25,7 +25,7 @@ function App() {
     const handleSearchChange = (event) => {
       setSearchKey(event.target.value)
       console.log(searchKey)
-      setCountriesToShow(countries.filter(country => country.name.common.includes(event.target.value)))
+      setCountriesToShow(countries.filter(country => country.name.common.toLowerCase().includes(event.target.value.toLowerCase())))
     }
 
 
