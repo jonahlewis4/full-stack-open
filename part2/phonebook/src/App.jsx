@@ -1,54 +1,10 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
-
-const People = ({persons, deletePerson}) => {
-  return persons.map(person => {
-    return (
-    <div key = {person.id}>
-      {person.name} {person.number} {` `} 
-      <button onClick = {() => deletePerson(person)}>delete</button>
-    </div>
-    )
-  })
-}
-
-
-
-const SearchFilter = ({value, onChange}) => {
-  return (
-    <div>
-        filter shown with:   
-        <input  
-              value = {value}
-              onChange = {onChange}
-        />
-    </div>
-  )
-}
-const PersonForm = ({onSubmit, name, number, onChanges}) =>{
-  return (
-    <form onSubmit = {onSubmit}>
-        <div>
-          name: 
-          <input  
-            value = {name}
-            onChange = {onChanges.handleNameChange}
-          />
-        </div>
-        <div>
-          number:
-          <input
-            value = {number}
-            onChange = {onChanges.handleNumberChange}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-  )
-}
+import People from './components/People'
+import SearchFilter from './components/SearchFilter'
+import PersonForm from './components/PersonForm'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -56,6 +12,8 @@ const App = () => {
   const [newNum, setNewNum] = useState('')
   const [searchKey, setSearchKey] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
+  const [addNotif, setAddNotif] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     console.log('effect')
@@ -96,6 +54,11 @@ const App = () => {
           setFilteredPersons(newPerson.name.includes(searchKey) ? filteredPersons.concat(result) : filteredPersons)
 
           console.log(createdPeople)
+          //notify the user that the person was added.
+          setAddNotif(`Added ${newPerson.name}`)
+          setTimeout( () => {
+            setAddNotif(null)
+          }, 5000) 
         })
     } 
     //else if only the names but not numbers match, confirm if the user iwants to change that person's phone number
@@ -113,7 +76,17 @@ const App = () => {
             console.log(updatedPerson)
             setPersons(persons.map(p => p.id === updatedPerson.id ? updatedPerson : p))
             setFilteredPersons(filteredPersons.map(p => p.id === updatedPerson.id ? updatedPerson : p))
-
+            setAddNotif(`Changed ${newPerson.name}'s number`)
+            setTimeout( () => {
+              setAddNotif(null)
+            }, 5000) 
+          })
+          //if the user was deleted in the time between clicking add and confirming, display that the person was deleted
+          .catch(() => {
+            setErrorMessage(`Information of ${updatedPerson.name} has already been removed from server`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
         }
     }
@@ -122,7 +95,6 @@ const App = () => {
       console.log(persons)
       alert(`${newName} with number ${newNum} is already added to phonebook`)
     }
-    //else if only the names but not numbers match, confirm if the user iwants to change that person's phone number
    
   }
   const deletePerson = person => {
@@ -159,7 +131,9 @@ const handleSearchKeyChange = (event) => {
   return (
     <div>
       <h2>Phonebook</h2>
-      
+      <Notification message = {addNotif} color = {'green'}/>
+      <Notification message = {errorMessage} color = {'red'}/>
+
       <SearchFilter value = {searchKey} onChange = {handleSearchKeyChange}/>
       
       <h3>add a new</h3>
