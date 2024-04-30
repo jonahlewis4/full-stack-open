@@ -51,7 +51,7 @@ const App = () => {
           const createdPeople = persons.concat(result)
           setPersons(createdPeople)
           //concatenate the filtered people to include the new person IF it fits in the filter
-          setFilteredPersons(newPerson.name.includes(searchKey) ? filteredPersons.concat(result) : filteredPersons)
+          setFilteredPersons(newPerson.name.toLowerCase().includes(searchKey.toLowerCase()) ? filteredPersons.concat(result) : filteredPersons)
 
           console.log(createdPeople)
           //notify the user that the person was added.
@@ -125,7 +125,7 @@ const handleSearchKeyChange = (event) => {
   console.log(event.target.value)
   setSearchKey(event.target.value)
   console.log(persons)
-  setFilteredPersons(persons.filter(person => person.name.includes(event.target.value)))
+  setFilteredPersons(persons.filter(person => person.name.toLowerCase().includes(event.target.value.toLowerCase())))
 }
 
   return (
