@@ -19,43 +19,33 @@ const Countries = ({countries}) => {
   //some countries have multiple capitals so we will use ternary statments to account for that
   else if (countries.length == 1){
     return (
-    <div>
-      {console.log(countries[0])}
-      <h2>{countries[0].name.common}</h2>
-      <div>{countries[0].capital.length == 1 ? 'capital' : 'capitals'} {
-        countries[0].capital.length == 1 ? countries[0].capital[0] : <ul>
-          {countries[0].capital.map(capital => <li key = {capital}>{capital}</li>)}
+      <div>
+        {console.log(countries[0])}
+        <h2>{countries[0].name.common}</h2>
+        <div>{countries[0].capital.length == 1 ? 'capital' : 'capitals'} {
+          countries[0].capital.length == 1 ? countries[0].capital[0] : <ul>
+            {countries[0].capital.map(capital => <li key = {capital}>{capital}</li>)}
+          </ul>
+        }
+        </div>
+        <div>area {countries[0].area}</div>
+        <br/>
+        <strong>languages: </strong>
+        <ul>  
+          {console.log(countries[0].languages)}
+          {Object.entries(countries[0].languages).map(language => {
+            return (
+              <li key = {language[1]}>{language[1]}</li>
+            )
+        })}
         </ul>
-      }
+        <img src={countries[0].flags.png} alt = {countries[0].flags.alt}/>
+
+
+        
       </div>
-      <div>area {countries[0].area}</div>
-      <br/>
-      <strong>languages: </strong>
-      <ul>  
-        {console.log(countries[0].languages)}
-        {Object.entries(countries[0].languages).map(language => {
-          return (
-            <li key = {language[1]}>{language[1]}</li>
-          )
-      })}
-      </ul>
-      <img src={countries[0].flags.png} alt = {countries[0].flags.alt}/>
-
-
-      
-    </div>
-  )
-}
-   
-  
- 
-  
-  
-  
-  
-  
-  
-  
+    )
+  }
 }
    
 export default Countries
