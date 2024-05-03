@@ -5,7 +5,7 @@ import SearchFilter from './components/SearchFilter'
 import countryService from './services/country'
 
 function App() {
-    const [searchKey, setSearchKey] = useState('')
+    //const [searchKey, setSearchKey] = useState('')
     const [countries, setCountries] = useState([])
     const [countriesToShow, setCountriesToShow] = useState(countries)
     useEffect(() => {
@@ -13,7 +13,7 @@ function App() {
         .getAll()
         .then(initialCountries => {
           setCountries(initialCountries)
-          setCountriesToShow(initialCountries.filter(country => country.name.common.includes(searchKey)))
+          setCountriesToShow(initialCountries)
 
           console.log(initialCountries)
         })
@@ -22,11 +22,7 @@ function App() {
     
     
     //function to handle serach bar changes.
-    const handleSearchChange = (event) => {
-      setSearchKey(event.target.value)
-      console.log(searchKey)
-      setCountriesToShow(countries.filter(country => country.name.common.toLowerCase().includes(event.target.value.toLowerCase())))
-    }
+    
     //function to handle when the player picks the show butotn on country list
     const setSingleCountry = (country) => {
       console.log("setting to one single country")
@@ -41,8 +37,9 @@ function App() {
 
     return (
       <div> 
-        <SearchFilter text = "find countries" value = {searchKey} onChange = {handleSearchChange}/> 
-        <Countries countries = {countriesToShow} onClick = {setSingleCountry}/>
+        {console.log('rerendering')}
+        <SearchFilter text = "find countries" setCountriesToShow = {setCountriesToShow} countries = {countries} countriesToShow = {countries}/> 
+        <Countries countries = {countriesToShow} onClick = {setSingleCountry} />
       </div>
     )
 }

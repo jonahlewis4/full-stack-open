@@ -2,7 +2,7 @@ import axios from 'axios'
 const Countries = ({countries, onClick}) => {
   //if there are over 10 countires, then tell the user to make a more specific query.
 
-  
+  console.log("Recreating countires componenet ")
 
   if(countries.length > 10){
     return <p>Too many matches, specify another filter</p>
@@ -35,7 +35,7 @@ const Countries = ({countries, onClick}) => {
 
     let success = false;
     console.log(`fetching weather data for ${countries[0].name.common}`)
-    const weatherKey = 'wrong'
+    const weatherKey = 'ba4200d724e541a785db16b31acea40c'
     const latitude = countries[0].latlng[0]
     const longitude = countries[0].latlng[1]
     axios 
