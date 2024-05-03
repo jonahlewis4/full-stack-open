@@ -15,7 +15,6 @@ function App() {
           setCountries(initialCountries)
           setCountriesToShow(initialCountries)
 
-          console.log(initialCountries)
         })
     }, [])
     
@@ -25,11 +24,7 @@ function App() {
     
     //function to handle when the player picks the show butotn on country list
     const setSingleCountry = (country) => {
-      console.log("setting to one single country")
-      console.log(country)
-      console.log(country.name.common)
       setCountriesToShow([country])
-      console.log(countriesToShow)
 
     }
 
@@ -37,7 +32,6 @@ function App() {
 
     return (
       <div> 
-        {console.log('rerendering')}
         <SearchFilter text = "find countries" setCountriesToShow = {setCountriesToShow} countries = {countries} countriesToShow = {countries}/> 
         <Countries countries = {countriesToShow} onClick = {setSingleCountry} />
       </div>
