@@ -1,12 +1,28 @@
 import axios from 'axios'
 import {useEffect} from 'react'
 import {useState} from 'react'
+const weatherKey = import.meta.env.VITE_WEATHER_KEY
+
 const Countries = ({countries, onClick}) => {
   //if there are over 10 countires, then tell the user to make a more specific query.
 
-  const [weatherData, setWeatherData] = useState([])
-  let previousCountry = []
+  const [weatherData, setWeatherData] = useState(null)
+  const [singleCountry, setSingleCountry] = useState(null)
 
+  useEffect(() => {
+    if(singleCountry && countries.length == 1)  {
+      const latitude = singleCountry.capitalInfo.latlng[0]
+      const longitude = singleCountry.capitalInfo.latlng[1] 
+      axios 
+        .get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${weatherKey}&units=metric`)
+        .then(result => {
+          setWeatherData(result.data)
+        })
+        .catch(err => {
+          console.log("key is invalid")
+        })
+    }
+  }, [singleCountry])
   
   if(countries.length > 10){
     return <p>Too many matches, specify another filter</p>
@@ -26,59 +42,53 @@ const Countries = ({countries, onClick}) => {
   )}
   //default case: if there is only one single country, Display that Country and many of its statistics.
   //some countries have multiple capitals so we will use ternary statments to account for that
-  else if (countries.length == 1){
-    //get the weather data of the country
-    console.log(previousCountry)
-    console.log(countries[0])
-    if(JSON.stringify(previousCountry) !== JSON.stringify(countries[0])){
-      console.log(`fetching weather data`)
-      const weatherKey = 'ba4200d724e541a785db16b31acea40c'
-      const latitude = countries[0].latlng[0]
-      const longitude = countries[0].latlng[1]
-      axios 
-      .get('')
-      .then(result => {
-        setWeatherData(result.data)
-        previousCountry = countries[0]
-        console.log(previousCountry)
-        console.log(result.data)
-      })
-      .catch(result => {
-        previousCountry = countries[0]
-        console.log(previousCountry)
-        console.log(countries[0])
-
-      })
-    }
-    return (
-      <div>
-          <h2>{countries[0].name.common}</h2>
-          <div>{countries[0].capital.length == 1 ? 'capital' : 'capitals'} {
-            countries[0].capital.length == 1 ? countries[0].capital[0] : <ul>
-              {countries[0].capital.map(capital => <li key = {capital}>{capital}</li>)}
+  else if (countries.length == 1) {
+      //if the country has changed, change the single country.
+        //get the weather data of the country
+      
+        if(!singleCountry || countries[0].name.common !== singleCountry.name.common){
+        setSingleCountry(countries[0])
+      }
+      
+    
+    if (weatherData != null){
+      return (
+      
+        <div>
+            <h2>{countries[0].name.common}</h2>
+            <div>{countries[0].capital.length == 1 ? 'capital' : 'capitals'} {
+              countries[0].capital.length == 1 ? countries[0].capital[0] : <ul>
+                {countries[0].capital.map(capital => <li key = {capital}>{capital}</li>)}
+              </ul>
+            }
+            </div>
+            <div>area {countries[0].area}</div>
+            <br/>
+            <strong>languages: </strong>
+            <ul>  
+              {Object.entries(countries[0].languages).map(language => {
+                return (
+                  <li key = {language[1]}>{language[1]}</li>
+                )
+            })}
             </ul>
-          }
-          </div>
-          <div>area {countries[0].area}</div>
-          <br/>
-          <strong>languages: </strong>
-          <ul>  
-            {Object.entries(countries[0].languages).map(language => {
-              return (
-                <li key = {language[1]}>{language[1]}</li>
-              )
-          })}
-          </ul>
-          <img src={countries[0].flags.png} alt = {countries[0].flags.alt}/>
-          
-          <div>
-              <h2>Weather in {countries[0].name.common}</h2>
-              temperature {'placeholder '} Celcius
-              <img src = {'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'} alt = {'placeholder alt'}/>
-              wind {'placeholder '} m/s 
-          </div>
-        </div>
-    )
+            <img src={countries[0].flags.png} alt = {countries[0].flags.alt}/>
+            
+            <div>
+              <h2>Weather in {countries[0].capital[0]}</h2>
+
+              {countries[0].capital.length == 1 ? <div></div> 
+                : <div>{`*multiple capitals*: I only have lat and long data for the first capital  ${countries[0].capital[0]}, which means I can only check the weather at that one capital :(`}</div>}
+              <div>temperature {weatherData.main.temp} Celcius</div>
+            
+              <img src = {`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}/>
+
+              <div>wind {weatherData.wind.speed} m/s </div>
+
+              </div>
+            </div>
+      )
+    }
   }
 }
    

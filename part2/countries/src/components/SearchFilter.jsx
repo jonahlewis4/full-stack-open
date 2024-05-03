@@ -8,7 +8,6 @@ const SearchFilter = ({text, setCountriesToShow, countries, countriesToShow}) =>
   setSearchKey(event.target.value)
   const filteredCountries = countries.filter(country => country.name.common.toLowerCase().includes(event.target.value.toLowerCase()))
   if(JSON.stringify(oldCountries) !== JSON.stringify(filteredCountries)){
-    console.log('listed countries is changed ')
     setCountriesToShow(filteredCountries)
 
   }  
