@@ -1,5 +1,7 @@
-const Countries = ({countries}) => {
+const Countries = ({countries, onClick}) => {
   //if there are over 10 countires, then tell the user to make a more specific query.
+
+  
 
   if(countries.length > 10){
     return <p>Too many matches, specify another filter</p>
@@ -10,8 +12,11 @@ const Countries = ({countries}) => {
     return(
       countries.map( country => {
         return (
-          <p key = {country.cca2}>{country.name.common}</p>
-
+          <div key = {country.cca2}>  
+            {country.name.common + ' '}
+            {console.log(country)}
+            <button onClick = {() => onClick(country)}>show</button> 
+          </div>
         )
       })
   )}

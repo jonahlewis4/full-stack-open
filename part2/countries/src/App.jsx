@@ -27,13 +27,22 @@ function App() {
       console.log(searchKey)
       setCountriesToShow(countries.filter(country => country.name.common.toLowerCase().includes(event.target.value.toLowerCase())))
     }
+    //function to handle when the player picks the show butotn on country list
+    const setSingleCountry = (country) => {
+      console.log("setting to one single country")
+      console.log(country)
+      console.log(country.name.common)
+      setCountriesToShow([country])
+      console.log(countriesToShow)
+
+    }
 
 
 
     return (
       <div> 
         <SearchFilter text = "find countries" value = {searchKey} onChange = {handleSearchChange}/> 
-        <Countries countries = {countriesToShow}/>
+        <Countries countries = {countriesToShow} onClick = {setSingleCountry}/>
       </div>
     )
 }
