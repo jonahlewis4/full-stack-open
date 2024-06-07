@@ -1,7 +1,10 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
+const fs = require('fs')
+const path = require('path')
 
-app.use(express.json())
+
 
 let persons = [
     { 
@@ -26,6 +29,10 @@ let persons = [
     }
 ]
 
+//const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
+
+app.use(express.json())
+app.use(morgan('tiny'))
 
 app.get('/', (request, response) => {
     response.send('<h1>Visit /api/persons to get the pepole<h1>')
@@ -110,7 +117,11 @@ app.post('/api/persons', (request, response) => {
 
     response.json(person)
 })
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({error: 'unkown endpoint'})
+}
 const PORT = 3001
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })

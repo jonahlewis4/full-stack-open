@@ -3,6 +3,11 @@ const app = express()
 
 app.use(express.json())
 
+const requestLogger = (request, resposne, next) => {
+  
+}
+
+
 let notes = [
     {
       id: 1,
