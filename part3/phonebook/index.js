@@ -3,6 +3,7 @@ const app = express()
 const morgan = require('morgan')
 const fs = require('fs')
 const path = require('path')
+const {token} = require("morgan");
 
 
 
@@ -31,8 +32,16 @@ let persons = [
 
 //const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
 
+
 app.use(express.json())
-app.use(morgan('tiny'))
+
+app.use(morgan((tokens, req, res) => {
+   if(req.method !== 'POST'){
+       return (tokens.method(req, res) + " " + tokens.url(req, res) + " " + tokens.status(req, res) +  " " + tokens['response-time'](req, res) + "ms")
+   }
+    return (tokens.method(req, res) + " " + tokens.url(req, res) + " " + tokens.status(req, res) + " " + tokens['response-time'](req, res) + "ms " + JSON.stringify(req.body))
+
+}))
 
 app.get('/', (request, response) => {
     response.send('<h1>Visit /api/persons to get the pepole<h1>')
