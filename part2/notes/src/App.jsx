@@ -30,7 +30,7 @@ const App = (props) => {
     //console.log('effect')
     noteService
       .getAll()
-      .then( initialNotes=> {
+      .then( initialNotes => {
         //console.log('promise fulfilled')
         setNotes(initialNotes)
       })
@@ -85,8 +85,8 @@ const App = (props) => {
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
-
-        setNotes(notes.filter(note => note.id != id))
+        console.log(error)
+        setNotes(notes.filter(note => note.id !== id))
       })
     
   }
