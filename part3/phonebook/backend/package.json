@@ -11,8 +11,9 @@
   "author": "jonah",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.19.2",
-    "lint": "^0.8.19",
+    "lint": "^1.1.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
