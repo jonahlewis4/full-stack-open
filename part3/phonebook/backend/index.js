@@ -1,43 +1,13 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
-const fs = require('fs')
-const path = require('path')
-const {token} = require("morgan");
 const cors  = require('cors')
-
-
-
-let persons = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
-//const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
-
+const Person = require('./models/person')
+require('dotenv').config();
 
 app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
-
 app.use(morgan((tokens, req, res) => {
    if(req.method !== 'POST'){
        return (tokens.method(req, res) + " " + tokens.url(req, res) + " " + tokens.status(req, res) +  " " + tokens['response-time'](req, res) + "ms")
@@ -46,38 +16,31 @@ app.use(morgan((tokens, req, res) => {
 
 }))
 
-app.get('/', (request, response) => {
-    response.send('<h1>Visit /api/persons to get the pepole<h1>')
-})
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(people => response.json(people))
 })
 app.get('/info', (request, response) => {
     const dateTime = new Date()
-    response.send(
-    `
-    <p> 
-        Phonebook has info for ${persons.length} people 
-    </p> 
-    <p> 
-        ${dateTime}
-    </p>
-    `
-    )
+    Person.countDocuments()
+        .then(count => {
+            response.send(
+        `
+                <p> 
+                    Phonebook has info for ${count} people 
+                </p> 
+                <p> 
+                    ${dateTime}
+                </p>
+            `
+            )
+        })
+
 })
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if(person){
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    }
-    else{
-        response.status(404).end()
-    }
+    })
 })
-
-
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     persons = persons.filter(person => person.id !== id)
@@ -93,7 +56,6 @@ const generateId = () => {
     }
     return id
 }
-
 app.post('/api/persons', (request, response) => {
     const body = request.body
     if(!body){
@@ -129,11 +91,8 @@ app.post('/api/persons', (request, response) => {
 
     response.json(person)
 })
-const unknownEndpoint = (request, response) => {
-    response.status(404).send({error: 'unkown endpoint'})
-}
-const PORT = 3001
 
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
