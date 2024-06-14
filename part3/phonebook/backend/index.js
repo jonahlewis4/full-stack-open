@@ -48,14 +48,6 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-const generateId = () => {
-    let id = Math.floor(Math.random() * 10000)
-    while(persons.some(person => person.id === id
-    )){
-        id = Math.floor(Math.random() * 10000)
-    }
-    return id
-}
 app.post('/api/persons', (request, response) => {
     const body = request.body
     if(!body){
@@ -73,23 +65,14 @@ app.post('/api/persons', (request, response) => {
             error: `number missing`
         })
     }
-    //if there already exists someone with the same name in the place
-    else if(persons.some(person => person.name === body.name)){
-        //respond with an error
-        return response.status(403).json({
-            error: `name must be unique`
-        })
-    }
-
-    const person = {
-        id: generateId(),
+    const person = new Person({
         name: body.name,
-        number: body.number
-    }
+        number: body.number,
+    })
+    person.save().then(savedNote => {
+        response.json(savedNote)
+    })
 
-    persons = persons.concat(person)
-
-    response.json(person)
 })
 
 const PORT = process.env.PORT
