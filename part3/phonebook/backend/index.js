@@ -3,6 +3,7 @@ const app = express()
 const morgan = require('morgan')
 const cors  = require('cors')
 const Person = require('./models/person')
+const {response} = require("express");
 require('dotenv').config();
 
 app.use(express.json())
@@ -70,18 +71,50 @@ app.post('/api/persons', (request, response) => {
         name: body.name,
         number: body.number,
     })
+    Person.findOne({"name": body.name})
+    .then(person => {
+
+    })
     person.save().then(savedNote => {
         response.json(savedNote)
     })
 
 })
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+    const id = request.params.id
+    const person = {
+        name: body.name,
+        number: body.number,
+    }
 
+    updatePersonById(id, person)
+        .then(updatedNote => {
+            if(updatedNote){
+                response.json(updatedNote)
+            }else
+                next(Error("Failed to find person with matching id"))
+        }).catch(err => {
+            //console.log(err)
+            next(Error("Invalid id"))
+        })
+
+})
+const updatePersonById =  (id, person) => {
+    return Person.findByIdAndUpdate(id, person, {new: true})
+}
 const unknownEndpoint = (request, response) => {
     response.status(404).send({error: 'unknown endpoint'})
 }
 const errorHandler = (error, request, response, next) => {
-    console.log(error.message)
+    if(error.message === "Failed to find person with matching id"){
+        response.status(404).send({error: 'Failed to find person with matching id'})
+    }
+    if(error.message === "Invalid id"){
+        response.status(400).send({error: 'Invalid id'})
+    }
 }
+
 app.use(unknownEndpoint)
 app.use(errorHandler)
 
@@ -89,3 +122,4 @@ const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
+
