@@ -71,12 +71,8 @@ app.post('/api/persons', (request, response) => {
         name: body.name,
         number: body.number,
     })
-    Person.findOne({"name": body.name})
-    .then(person => {
-
-    })
-    person.save().then(savedNote => {
-        response.json(savedNote)
+    person.save().then(savedPerson => {
+        return response.json(savedPerson)
     })
 
 })
