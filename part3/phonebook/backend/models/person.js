@@ -8,7 +8,12 @@ mongoose.connect(url)
     .then(() => console.log('connected to the database'))
     .catch((err) => console.log("error connecting to database" , err.message));
 const personSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        required: true,
+        minlength: 3,
+    },
+
     number: String,
 })
 personSchema.set('toJSON', {
