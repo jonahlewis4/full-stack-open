@@ -50,16 +50,11 @@ app.delete('/api/persons/:id', (request, response, next) => {
         .catch(err => next(err))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
     if(!body){
         return response.status(400).json({
             error: `unable to find request body`
-        })
-    }
-    else if(!body.name){
-        return response.status(400).json({
-            error: `name missing`
         })
     }
     else if(!body.number){
@@ -71,9 +66,12 @@ app.post('/api/persons', (request, response) => {
         name: body.name,
         number: body.number,
     })
-    person.save().then(savedPerson => {
+    person.save()
+        .then(savedPerson => {
         return response.json(savedPerson)
     })
+        .catch(err => next(err))
+
 
 })
 app.put('/api/persons/:id', (request, response, next) => {
@@ -108,6 +106,12 @@ const errorHandler = (error, request, response, next) => {
     }
     if(error.message === "Invalid id"){
         response.status(400).send({error: 'Invalid id'})
+    }
+    if(error.name === "CastError"){
+        return response.status(400).json({error: 'failed to cast with matching id'})
+
+    } else if(error.name === "ValidationError"){
+        return response.status(400).json({error: error.message})
     }
 }
 
