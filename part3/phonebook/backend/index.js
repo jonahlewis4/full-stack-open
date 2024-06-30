@@ -3,7 +3,7 @@ const app = express()
 const morgan = require('morgan')
 const cors  = require('cors')
 const Person = require('./models/person')
-const {response} = require("express");
+const {response, request} = require("express");
 require('dotenv').config();
 
 app.use(express.json())
@@ -77,26 +77,17 @@ app.post('/api/persons', (request, response, next) => {
 app.put('/api/persons/:id', (request, response, next) => {
     const body = request.body
     const id = request.params.id
-    const person = {
-        name: body.name,
-        number: body.number,
-    }
-
-    updatePersonById(id, person)
-        .then(updatedNote => {
-            if(updatedNote){
-                response.json(updatedNote)
-            }else
-                next(Error("Failed to find person with matching id"))
-        }).catch(err => {
-            //console.log(err)
-            next(Error("Invalid id"))
-        })
-
+    console.log(id, body)
+    Person.findByIdAndUpdate(
+        request.params.id,
+        request.body,
+        {new: true, runValidators: true}
+    ).then(updatedNote => {
+        response.json(updatedNote)
+    })
+    .catch(err => next(err))
 })
-const updatePersonById =  (id, person) => {
-    return Person.findByIdAndUpdate(id, person, {new: true})
-}
+
 const unknownEndpoint = (request, response) => {
     response.status(404).send({error: 'unknown endpoint'})
 }
