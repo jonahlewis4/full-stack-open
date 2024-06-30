@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import personService from './services/persons'
 import People from './components/People'
 import SearchFilter from './components/SearchFilter'
 import PersonForm from './components/PersonForm'
 import Notification from './components/Notification'
+import * as test from "node:test";
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -17,7 +17,6 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios
       personService
       .getAll()
       .then(response => {
@@ -43,7 +42,7 @@ const App = () => {
     console.log(newPerson)
     //if the person is compeltely unique, just add it to the array.
     if(!persons.some(person => (person.name === newPerson.name))){
-      const newPersons = persons.concat(newPerson)
+      //const newPersons = persons.concat(newPerson)
       //add a new person to the dataserver and update state person array.  
       personService
         .create(newPerson)
@@ -60,7 +59,13 @@ const App = () => {
             setAddNotif(null)
           }, 5000) 
         })
-    } 
+          .catch(error => {
+              setErrorMessage(error.response.data.error)
+              setTimeout(() => {
+                  setErrorMessage(null)
+              }, 5000)
+          })
+    }
     //else if only the names but not numbers match, confirm if the user iwants to change that person's phone number
     else if (persons.some(person => (person.name === newName && person.number !== newNum))) {
         if(confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
@@ -82,8 +87,8 @@ const App = () => {
             }, 5000) 
           })
           //if the user was deleted in the time between clicking add and confirming, display that the person was deleted
-          .catch(() => {
-            setErrorMessage(`Information of ${updatedPerson.name} has already been removed from server`)
+          .catch((err) => {
+            setErrorMessage(err.message)
             setTimeout(() => {
               setErrorMessage(null)
             }, 5000)
@@ -104,7 +109,7 @@ const App = () => {
       //delete the person
       personService
         .remove(person)
-        .then((result) => {
+        .then( () => {
           //update people state array
           setPersons(persons.filter((p) => p.id != person.id))
           setFilteredPersons(filteredPersons.filter(p => p.id != person.id))
