@@ -17,6 +17,7 @@ export default [
       '@stylistic/js': stylisticJs
     },
     rules: {
+      "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
       '@stylistic/js/indent': [
         'error',
         2
